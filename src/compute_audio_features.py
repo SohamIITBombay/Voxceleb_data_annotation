@@ -12,6 +12,12 @@ import matplotlib.pyplot as plt
 import subprocess
 
 
+############################################################
+############################################################
+######## SAMPLE_RATE, NUM_CHANNELS, BIT DEPTH, RMS #########
+############################################################
+############################################################
+
 wav_dir = "../data/wav"
 wav_files = glob.glob(wav_dir + "/**/*.wav", recursive=True)
 print("Number of wavs: ", len(wav_files))
@@ -91,9 +97,12 @@ plt.show()
 df.to_csv("../eda.csv", index=None)
 
 
+############################################################
+############################################################
+################# SNR CALCULATION ##########################
+############################################################
+############################################################
 
-
-# Creating directory structure as required by denoiser package
 
 
 noisy_wav_dir = "../data/noisy_wavs"
@@ -101,47 +110,70 @@ os.makedirs(noisy_wav_dir, exist_ok=True)
 cleaned_wav_dir = "../data/cleaned_wavs"
 os.makedirs(cleaned_wav_dir, exist_ok=True)
 
+
 wav_files = glob.glob("../data/wav/**/*.wav", recursive=True)
 print(len(wav_files))
+
 for wav_file in tqdm(wav_files):
 
-    dir_info = "_".join(wav_file.split("/")[3:])
+    dir_info = "_#_".join(wav_file.split("/")[3:])
     new_name = os.path.join(noisy_wav_dir, dir_info)
     shutil.copy(wav_file, new_name)
 
 
-subprocess.run("bash run_denoising.sh")
-# !bash run_denoising.sh
+command = ["bash", "/raid/soham.pendurkar/workspace/Voxceleb_data_annotation/src/run_denoising.sh"]
+
+result = subprocess.run(command, capture_output=True, text=True)
+
+print("stdout:", result.stdout)
+print("stderr:", result.stderr)
 
 
 
-noisy_wavs = glob.glob(noisy_wav_dir + "/*.wav").sort(key=lambda x: str(x[0]))
-cleaned_wavs = glob.glob(cleaned_wav_dir + "/*.wav").sort(key=lambda x: str(x[0]))
+noisy_wavs = glob.glob(noisy_wav_dir + "/*.wav")
+noisy_wavs.sort()
+cleaned_wavs = glob.glob(cleaned_wav_dir + "/*_enhanced.wav")
+cleaned_wavs.sort()
 
 snrs = []
-for i in range(len(noisy_wavs)):
+for i in tqdm(range(len(noisy_wavs))):
+    # print(noisy_wavs[i], cleaned_wavs[i])
     noisy_signal = librosa.load(noisy_wavs[i])[0]
     cleaned_signal = librosa.load(cleaned_wavs[i])[0]
 
+    noise = noisy_signal - cleaned_signal
+    noise_energy = np.sum(noise ** 2)
+    
     noisy_signal_energy = np.sum(noisy_signal ** 2)
-    cleaned_signal_energy = np.sum(cleaned_signal ** 2)
-
-    noise_energy = np.array(noisy_signal_energy - cleaned_signal_energy)
+ 
     snr = 10 * np.log10(noisy_signal_energy/noise_energy)
 
     snrs.append(snr)
 
 original_names = []
-for file_name in noisy_wavs:
-    original_file_name = "../data/wav/" + "/".join(file_name.split("_"))
+
+for file in noisy_wavs:
+    file_name = os.path.basename(file)
+    original_file_name = "../data/wav/" + "/".join(file_name.split("_#_"))
+    # print(original_file_name)
     original_names.append(original_file_name)
 
+
 temp_df = pd.DataFrame(columns=['file_name', 'snr'])
-temp_df['file_name_d'] = original_names
+temp_df['file_name'] = original_names
 temp_df['snr'] = snrs
+temp_df.sort_values(by="file_name", inplace=True)
 
 
+df = pd.read_csv("../eda.csv").sort_values(by="file_name").reset_index(drop=True)
 
-df = pd.read_csv("../eda.csv")
+
 df = pd.merge(df, temp_df, on="file_name", how="inner")
 print(df.shape)
+
+print(df['snr'].describe())
+df['snr'].hist(bins=50)
+plt.title("snr")
+plt.show()
+
+df.to_csv("../eda.csv", index=None)
