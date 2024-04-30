@@ -41,26 +41,26 @@ For this repo, only the test split of VoxCeleb1 **Speaker Verification** data wi
 ## Labelling/Annotation categories
 
 ### Audio Features
-- Sample rate --
-- Number of Channels --
-- Duration --
-- Bit Depth --
-- Noise level --
-- RMS (Correlated to loudness) --
+- Sample rate
+- Number of Channels
+- Duration
+- Bit Depth
+- Noise level
+- RMS (Correlated to loudness)
 
 ### Semantic Features
-- Transcriptions --
-- Transcription length (Number of words in the transcription) --
-- Emotions --
-- Language --
+- Transcriptions
+- Transcription length (Number of words in the transcription)
+- Emotions
+- Language
 - Incorrect chopping (Abrupt end of sentence) 
 
 ### Audio Events
-- Speaker Identity --
-- Number of speakers in each utterance --
-- Silence duration (No Speech Activity) --
-- Speech overlap --
-- Laughter, Crowd cheering, music --
+- Speaker Identity
+- Number of speakers in each utterance
+- Silence duration (No Speech Activity)
+- Speech overlap
+- Laughter, Crowd cheering, music
 
 
 
