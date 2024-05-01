@@ -59,6 +59,7 @@ df['duration'] = durations
 df['num_channels'] = num_channels
 df['bit_depths'] = bit_depths
 df['rms'] = rmss
+df['speaker_id'] = df['file_name'].apply(lambda x: x.split("/")[3])
 
 print(df.head())
 

@@ -4,7 +4,7 @@ import warnings
 import pandas as pd
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-import whisper_at as whisper
+# import whisper_at as whisper
 import torch
 import pandas as pd
 warnings.filterwarnings("ignore")
@@ -146,31 +146,3 @@ print(df['num_speakers'].describe())
 df['num_speakers'].hist(bins=50)
 plt.title("num_speakers")
 plt.show()
-
-
-
-
-device_idx = 3
-audio_tagging_time_resolution = 10
-top_k=1
-model = whisper.load_model("large-v2", device=torch.device("cuda:" + str(device_idx)), download_root="/disk3/soham/")
-
-
-
-def get_audio_tags(wav_file, duration, audio_tagging_time_resolution=10, top_k=2):
-    audio_tagging_time_resolution = min(duration, audio_tagging_time_resolution)
-    result = model.transcribe(wav_file, at_time_res=audio_tagging_time_resolution)
-
-    audio_tag_result = whisper.parse_at_label(result, language='follow_asr', top_k=top_k, p_threshold=-1, include_class_list=list(range(527)))
-
-    print(result)
-    print(audio_tag_result)
-    return audio_tag_result
-
-
-tags = []
-for i, row in tqdm(df.iterrows(), total=len(df)):
-    tags.append(get_audio_tags(row['file_name']))
-
-df['audio_events'] = tags
-df.to_csv("../eda.csv", index=None)
