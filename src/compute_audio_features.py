@@ -5,10 +5,9 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pandas as pd
 import librosa
-import glob, os, shutil
+import shutil
 import librosa
 import numpy as np
-import matplotlib.pyplot as plt
 import subprocess
 
 
@@ -39,7 +38,7 @@ sample_rates, durations = [], []
 num_channels, bit_depths = [], []
 rmss = []
 
-for wav in tqdm(wav_files):
+for wav in tqdm(wav_files, desc="Computing audio features"):
     
     audio_seg = AudioSegment.from_wav(wav)
 
@@ -114,7 +113,7 @@ os.makedirs(cleaned_wav_dir, exist_ok=True)
 wav_files = glob.glob("../data/wav/**/*.wav", recursive=True)
 print(len(wav_files))
 
-for wav_file in tqdm(wav_files):
+for wav_file in tqdm(wav_files, desc="Copying files"):
 
     dir_info = "_#_".join(wav_file.split("/")[3:])
     new_name = os.path.join(noisy_wav_dir, dir_info)

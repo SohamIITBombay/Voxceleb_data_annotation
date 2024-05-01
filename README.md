@@ -28,15 +28,17 @@ For this repo, only the test split of VoxCeleb1 **Speaker Verification** data wi
 
 ## Label/Annotation Details
 1. Transcription
-2. Speaker Identity
-3. Number of Speakers in each Audio clip
-4. Emotions contained in the utterance
-5. Audio events (e.g. laughter, crowd cheers, music) along with their timestamps
-6. Basic file metadata (sample rate, channels, duration)
-7. Audio quality / naturalness / noise level (we will want to use this to filter based on quality later on).
-8. Total Speech overlap in each audio clip (Total duration where more than one speaker is talking at the same time)
-9. Language of each utterance
-10. Incorrect chopping
+2. Transcription length
+3. Speaker Identity
+4. Number of Speakers in each Audio clip
+5. Emotions contained in the utterance
+6. Audio events (e.g. laughter, crowd cheers, music) along with their timestamps
+7. Basic file metadata (sample rate, channels, duration)
+8. Audio quality / naturalness / noise level (we will want to use this to filter based on quality later on).
+9. RMS Value of signal (Correlates to perceived loudness)
+10. Total Speech overlap in each audio clip (Total duration where more than one speaker is talking at the same time)
+11. Silence Duration (No speech activity)
+12. Language of each utterance
 
 ## Labelling/Annotation categories
 
@@ -52,8 +54,7 @@ For this repo, only the test split of VoxCeleb1 **Speaker Verification** data wi
 - Transcriptions
 - Transcription length (Number of words in the transcription)
 - Emotions
-- Language
-- Incorrect chopping (Abrupt end of sentence) 
+- Language 
 
 ### Audio Events
 - Speaker Identity
@@ -63,4 +64,14 @@ For this repo, only the test split of VoxCeleb1 **Speaker Verification** data wi
 - Laughter, Crowd cheering, music
 
 
+## Structure
 
+### Notebook
+- The notebook ```src/eda.ipynb``` contains the thought process and working flow of the EDA.
+
+- It outlines which steps were taken for EDA, which tools were used, why there were used.
+
+- It also contains process flows which did not prove successful. 
+
+### Scripts
+- The scripts are just modular versions of the entire notebook for easy execution.

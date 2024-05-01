@@ -3,17 +3,17 @@ import torch
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pandas as pd
+import whisper
 from transformers import pipeline
+
 
 df = pd.read_csv("../eda.csv")
 
 
-import whisper
-
 model_size = "large-v3"
 device_idx = 2
 model = whisper.load_model(model_size, device=torch.device("cuda:" + str(device_idx)), \
-                                    download_root="/disk3/soham/")
+                                    download_root="/raid/soham.pendurkar/workspace")
 
 
 def get_transcription(wav_file):
@@ -44,7 +44,6 @@ for i, row in tqdm(df.iterrows(), total=len(df)):
 df['transcription'] = transcriptions
 df['avg_log_probabilities'] = avg_log_prob_list
 df['language'] = languages
-# df['language_prob'] = language_prob
 
 
 df.to_csv("../eda.csv", index=None)
@@ -76,7 +75,7 @@ plt.show()
 
 
 
-classifier = pipeline(task="text-classification", model="SamLowe/roberta-base-go_emotions", top_k=5, device=torch.device("cuda:2"))
+classifier = pipeline(task="text-classification", model="SamLowe/roberta-base-go_emotions", top_k=5, device=torch.device("cuda:3"))
 
 
 def get_emotions(sentence, threshold):
