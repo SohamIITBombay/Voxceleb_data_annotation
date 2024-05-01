@@ -19,8 +19,13 @@ echo
 echo
 
 echo "Computing audio events"
-source activate data_annotation_2
+source activate data_annotation
 python3 compute_audio_events.py
+
+
+echo "Computing audio tags"
+source activate data_annotation_2
+python3 compute_audio_tags.py
 
 echo
 echo
